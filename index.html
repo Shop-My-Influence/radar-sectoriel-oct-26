@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Radar Sectoriel — Novembre 2026 — SMI</title>
+<link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --indigo:#7B59F5; --carotte:#FF7131; --noir:#0D142C; --blanc:#FFFFFF; }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Karla',system-ui,sans-serif;background:var(--blanc);color:var(--noir);font-size:15px;line-height:1.65;}
+
+  /* HEADER */
+  .header{background:var(--noir);padding:40px 48px 36px;}
+  .header-inner{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:24px;}
+  .header-label{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:3px;}
+  .header-title{font-size:26px;font-weight:800;color:var(--blanc);line-height:1.2;}
+  .header-title span{color:var(--carotte);}
+  .header-date{font-size:12px;color:rgba(255,255,255,.35);margin-top:4px;}
+  .header-chips{margin-top:24px;display:flex;gap:8px;flex-wrap:wrap;}
+  .chip{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid rgba(123,89,245,.5);color:rgba(255,255,255,.6);text-decoration:none;transition:background .15s;}
+  .chip:hover{background:rgba(123,89,245,.3);color:var(--blanc);}
+
+  /* WRAP */
+  .wrap{max-width:880px;margin:0 auto;padding:44px 28px 72px;}
+  .spacer{height:40px;}
+
+  /* SECTION SÉPARATEUR */
+  .macro-sep{display:flex;align-items:center;gap:16px;margin:48px 0 32px;}
+  .macro-sep-line{flex:1;height:2px;background:var(--indigo);}
+  .macro-sep-label{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blanc);background:var(--indigo);padding:6px 16px;border-radius:20px;white-space:nowrap;}
+  .macro-sep-label.carotte{background:var(--carotte);}
+  .section-title{font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--indigo);margin-bottom:16px;padding-bottom:7px;border-bottom:2px solid var(--indigo);}
+
+  /* RÉSUMÉ EXÉCUTIF */
+  .exec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+  .exec-stat{background:var(--noir);border-radius:12px;padding:20px;color:var(--blanc);}
+  .exec-stat .num{font-size:34px;font-weight:800;line-height:1;color:var(--carotte);}
+  .exec-stat .num sup{font-size:16px;vertical-align:super;}
+  .exec-stat .lbl{font-size:11px;font-weight:700;color:rgba(255,255,255,.5);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;}
+  .exec-stat .desc{font-size:12px;color:rgba(255,255,255,.7);margin-top:6px;line-height:1.4;}
+
+  .exec-bullets{background:rgba(123,89,245,.05);border:1.5px solid rgba(123,89,245,.15);border-radius:12px;padding:20px 24px;margin-bottom:8px;}
+  .exec-bullets ul{list-style:none;display:flex;flex-direction:column;gap:7px;}
+  .exec-bullets li{font-size:13px;color:rgba(13,20,44,.7);padding-left:14px;position:relative;line-height:1.45;}
+  .exec-bullets li::before{content:'';position:absolute;left:0;top:7px;width:5px;height:5px;border-radius:50%;background:var(--indigo);}
+  .exec-bullets li strong{color:var(--noir);}
+
+  /* NEWS CARDS */
+  .news-card{border-radius:12px;border:1.5px solid rgba(13,20,44,.1);margin-bottom:14px;overflow:hidden;}
+  .news-header{padding:14px 18px;display:flex;align-items:center;gap:12px;background:rgba(123,89,245,.03);border-bottom:1px solid rgba(13,20,44,.07);}
+  .news-badge{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;color:var(--blanc);flex-shrink:0;}
+  .b-noir{background:var(--noir);} .b-carotte{background:var(--carotte);} .b-indigo{background:var(--indigo);}
+  .news-platform{font-size:14px;font-weight:800;color:var(--noir);}
+  .news-tagline{font-size:11px;color:rgba(13,20,44,.4);margin-top:1px;}
+  .news-body{padding:0;}
+  .news-item{padding:12px 18px;border-bottom:1px solid rgba(13,20,44,.06);display:flex;gap:12px;align-items:flex-start;}
+  .news-item:last-child{border-bottom:none;}
+  .news-date{flex-shrink:0;font-size:10px;font-weight:700;color:rgba(13,20,44,.35);letter-spacing:.04em;text-transform:uppercase;min-width:56px;padding-top:2px;}
+  .news-content{flex:1;}
+  .news-content strong{font-size:13px;font-weight:800;color:var(--noir);display:block;line-height:1.3;margin-bottom:2px;}
+  .news-content span{font-size:12.5px;color:rgba(13,20,44,.6);line-height:1.45;}
+  .news-src{font-size:10.5px;font-weight:700;text-decoration:none;color:var(--indigo);margin-top:4px;display:inline-block;}
+  .news-src.carotte{color:var(--carotte);}
+  .news-src:hover{text-decoration:underline;}
+
+  /* SECONDARY NEWS (petites plateformes) */
+  .sec-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+  .sec-card{border-radius:12px;border:1.5px solid rgba(13,20,44,.1);padding:16px;}
+  .sec-card-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .sec-badge{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;color:var(--blanc);flex-shrink:0;}
+  .sec-name{font-size:13px;font-weight:800;color:var(--noir);}
+  .sec-item{font-size:12px;color:rgba(13,20,44,.6);line-height:1.45;padding-left:11px;position:relative;margin-bottom:6px;}
+  .sec-item::before{content:'';position:absolute;left:0;top:6px;width:4px;height:4px;border-radius:50%;background:rgba(13,20,44,.25);}
+  .sec-item strong{color:var(--noir);}
+  .sec-item a{color:var(--indigo);font-weight:700;font-size:11px;text-decoration:none;}
+  .sec-item a:hover{text-decoration:underline;}
+
+  /* DONNÉES MARCHÉ */
+  .market-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px;}
+  .market-stat{border-radius:10px;padding:16px;text-align:center;}
+  .ms-indigo{background:rgba(123,89,245,.08);border:1px solid rgba(123,89,245,.2);}
+  .ms-carotte{background:rgba(255,113,49,.08);border:1px solid rgba(255,113,49,.2);}
+  .ms-noir{background:rgba(13,20,44,.06);border:1px solid rgba(13,20,44,.12);}
+  .market-stat .num{font-size:26px;font-weight:800;line-height:1;}
+  .ms-indigo .num{color:var(--indigo);}
+  .ms-carotte .num{color:var(--carotte);}
+  .ms-noir .num{color:var(--noir);}
+  .market-stat .lbl{font-size:11px;color:rgba(13,20,44,.5);margin-top:5px;line-height:1.35;}
+
+  /* TENDANCES */
+  .tend-list{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+  .tend-item{border-radius:10px;border:1px solid rgba(13,20,44,.08);padding:14px 16px;display:flex;gap:12px;align-items:flex-start;}
+  .tend-num{flex-shrink:0;width:26px;height:26px;background:var(--indigo);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--blanc);}
+  .tend-body strong{display:block;font-size:13px;font-weight:800;color:var(--noir);margin-bottom:2px;}
+  .tend-body span{font-size:12.5px;color:rgba(13,20,44,.6);line-height:1.45;}
+  .tend-body a{color:var(--indigo);font-weight:700;font-size:11px;text-decoration:none;}
+  .tend-body a:hover{text-decoration:underline;}
+
+  /* PLATEFORMES */
+  .plat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+  .plat-card{border-radius:10px;padding:14px;border:1px solid rgba(13,20,44,.08);}
+  .plat-name{font-size:12px;font-weight:800;color:var(--noir);margin-bottom:6px;}
+  .plat-stat{font-size:22px;font-weight:800;color:var(--indigo);line-height:1;}
+  .plat-stat.down{color:var(--carotte);}
+  .plat-delta{font-size:11px;font-weight:700;margin-top:2px;}
+  .delta-up{color:var(--indigo);}
+  .delta-down{color:var(--carotte);}
+  .plat-note{font-size:11px;color:rgba(13,20,44,.5);margin-top:4px;line-height:1.35;}
+
+  /* FRANCE FOCUS */
+  .fr-card{background:rgba(123,89,245,.04);border:1.5px solid rgba(123,89,245,.15);border-radius:12px;padding:24px;margin-bottom:20px;}
+  .fr-card h3{font-size:13px;font-weight:800;color:var(--indigo);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+  .fr-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .fr-block strong{font-size:12px;font-weight:800;color:var(--noir);display:block;margin-bottom:5px;}
+  .fr-block span{font-size:12px;color:rgba(13,20,44,.6);line-height:1.5;}
+
+  /* SMI IMPLICATIONS */
+  .impl-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+  .impl-card{border-radius:12px;padding:20px;}
+  .impl-opp{border:2px solid var(--indigo);}
+  .impl-vig{border:2px solid var(--carotte);}
+  .impl-title{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;}
+  .impl-opp .impl-title{color:var(--indigo);}
+  .impl-vig .impl-title{color:var(--carotte);}
+  .impl-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+  .impl-item{font-size:12.5px;color:rgba(13,20,44,.65);padding-left:12px;position:relative;line-height:1.45;}
+  .impl-item::before{content:'';position:absolute;left:0;top:6px;width:4px;height:4px;border-radius:50%;}
+  .impl-opp .impl-item::before{background:var(--indigo);}
+  .impl-vig .impl-item::before{background:var(--carotte);}
+  .impl-item strong{color:var(--noir);}
+
+  /* SOURCES */
+  .sources-block{background:rgba(13,20,44,.04);border-radius:10px;padding:16px 20px;font-size:11.5px;color:rgba(13,20,44,.5);line-height:1.6;}
+  .sources-block strong{color:var(--noir);}
+  .sources-block a{color:var(--indigo);text-decoration:none;}
+  .sources-block a:hover{text-decoration:underline;}
+
+  /* FOOTER */
+  .footer{text-align:center;padding:24px;font-size:11px;color:rgba(13,20,44,.3);border-top:1px solid rgba(13,20,44,.08);max-width:880px;margin:0 auto;}
+  .footer strong{color:var(--indigo);}
+
+  @media(max-width:640px){
+    .header{padding:28px 20px;}
+    .header-inner{flex-direction:column;}
+    .wrap{padding:24px 14px 48px;}
+    .exec-grid{grid-template-columns:1fr;}
+    .sec-grid{grid-template-columns:1fr;}
+    .market-grid{grid-template-columns:1fr 1fr;}
+    .plat-grid{grid-template-columns:1fr 1fr;}
+    .fr-grid{grid-template-columns:1fr;}
+    .impl-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <img src="https://i.imgur.com/5Ao7FgV.png" alt="Shop My Influence" style="height:32px">
+    <div style="text-align:right">
+      <div class="header-label">Usage interne · CODIR & Équipe commerciale</div>
+      <div class="header-title">Radar Sectoriel <span>#01</span></div>
+      <div class="header-date">Novembre 2026 · Nouveautés concurrents + Veille marché</div>
+    </div>
+  </div>
+  <div class="header-chips">
+    <a class="chip" href="#concurrents">Concurrents</a>
+    <a class="chip" href="#marche">Marché</a>
+    <a class="chip" href="#france">Focus France</a>
+    <a class="chip" href="#implications">Implications SMI</a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- ══ RÉSUMÉ EXÉCUTIF ══ -->
+  <div class="section-title">Résumé exécutif</div>
+
+  <div class="exec-grid">
+    <div class="exec-stat">
+      <div class="num">6<sup>Md$</sup></div>
+      <div class="lbl">Ventes annuelles sur LTK</div>
+      <div class="desc">Chiffre communiqué par LTK dans son newsroom d'octobre 2026. 44M shoppers mensuels actifs sur la plateforme.</div>
+    </div>
+    <div class="exec-stat">
+      <div class="num">+200<sup>%</sup></div>
+      <div class="lbl">Croissance ShopMy an sur an</div>
+      <div class="desc">Taux de croissance 2026 de ShopMy. La plateforme passe de 0 à 1,5 Md$ de valorisation en 5 ans.</div>
+    </div>
+    <div class="exec-stat">
+      <div class="num">84<sup>Md$</sup></div>
+      <div class="lbl">Social commerce influenceurs 2026</div>
+      <div class="desc">Volume total de social commerce influencé par des créateurs en 2026. Source : Digital Applied / Adweek 2026.</div>
+    </div>
+  </div>
+
+  <div class="exec-bullets">
+    <ul>
+      <li><strong>LTK accélère sur l'IA</strong> — 3 lancements en moins de 8 mois : chatbot IA (fév. 2026), Quick Collabs (mars), IA Auto-Draft pour créateurs (oct.). LTK se positionne comme la plateforme la plus avancée technologiquement.</li>
+      <li><strong>ShopMy et LTK pivotent vers le social commerce</strong> — les deux plateformes s'éloignent de l'affiliation pure pour devenir des destinations de shopping à part entière, avec IA de découverte et profils consommateurs.</li>
+      <li><strong>TikTok recule fortement en Europe</strong> — -12,5 pts à 67% d'usage marques (Kolsquare). WhatsApp commerce et LinkedIn montent. Instagram reste incontournable à 91%.</li>
+      <li><strong>L'influence s'installe dans le marketing long terme</strong> — partenariats ambassadeurs (39%) et paid media d'amplification (63%) dominent la hausse des budgets. La campagne one-shot recule.</li>
+      <li><strong>La mesure reste le premier frein</strong> — la confiance dans le ROI stagne malgré les investissements croissants. La demande de full funnel s'accélère.</li>
+    </ul>
+  </div>
+
+  <!-- ══ CONCURRENTS ══ -->
+  <div id="concurrents"></div>
+  <div class="macro-sep">
+    <div class="macro-sep-line"></div>
+    <div class="macro-sep-label">Nouveautés Concurrents</div>
+    <div class="macro-sep-line"></div>
+  </div>
+
+  <!-- LTK -->
+  <div class="news-card">
+    <div class="news-header">
+      <div class="news-badge b-carotte">LTK</div>
+      <div>
+        <div class="news-platform">LTK</div>
+        <div class="news-tagline">shopltk.com · Valorisation 2 Md$ · 44M shoppers · $6B de ventes annuelles</div>
+      </div>
+    </div>
+    <div class="news-body">
+      <div class="news-item">
+        <div class="news-date">6 oct. 2026</div>
+        <div class="news-content">
+          <strong>LTK AI Auto-Draft — Rédaction de contenu assistée par IA pour les créateurs</strong>
+          <span>LTK lance une fonctionnalité IA qui génère automatiquement des brouillons de contenu pour les créateurs iOS à partir des produits qu'ils sélectionnent. Le créateur n'a plus qu'à relire et publier. Objectif : réduire le temps de production et augmenter le volume de publications.</span>
+          <a class="news-src" href="https://company.shopltk.com/en/press" target="_blank" rel="noopener">↗ LTK Newsroom, 6 oct. 2026</a>
+        </div>
+      </div>
+      <div class="news-item">
+        <div class="news-date">24 sept. 2026</div>
+        <div class="news-content">
+          <strong>Nouveau moteur de découverte IA — Onglet Search unifié dans l'application</strong>
+          <span>LTK lance un onglet "Search" dans son application grand public qui unifie la découverte par intérêts, les recommandations de créateurs et un chatbot IA conversationnel en un seul point d'entrée. Les consommateurs peuvent demander "quoi porter pour un mariage en été" et obtenir des suggestions ancrées dans du contenu créateur réel.</span>
+          <a class="news-src" href="https://www.netinfluencer.com/tag/ltk/" target="_blank" rel="noopener">↗ NetInfluencer, 25 sept. 2026</a>
+        </div>
+      </div>
+      <div class="news-item">
+        <div class="news-date">27 fév. 2026</div>
+        <div class="news-content">
+          <strong>LTK AI Chatbot — Découverte conversationnelle dans l'app consommateur</strong>
+          <span>Chatbot intégré directement dans l'application LTK pour les 44M shoppers. Il répond à des questions d'intention d'achat ("style, mode de vie, cadeaux") en s'appuyant exclusivement sur le contenu des créateurs de la plateforme. La confiance envers les créateurs est en hausse de 21% an sur an selon LTK.</span>
+          <a class="news-src" href="https://secure.businesswire.com/news/home/20260227542191/en/" target="_blank" rel="noopener">↗ Business Wire, 27 fév. 2026</a>
+        </div>
+      </div>
+      <div class="news-item">
+        <div class="news-date">19 mars 2026</div>
+        <div class="news-content">
+          <strong>LTK Quick Collabs — Campagnes marques à tarif fixe, lancement en quelques minutes</strong>
+          <span>Nouvelle fonctionnalité sur la plateforme marques : les Quick Collabs permettent de lancer une campagne d'influence à tarif fixe en quelques minutes. Les créateurs de la plateforme optent librement. Supprime les phases de négociation et de contractualisation. Conçu pour les petites marques ou les tests rapides.</span>
+          <a class="news-src" href="https://www.netinfluencer.com/ltk-adds-conversational-ai-agent-to-help-brands-build-creator-campaigns/" target="_blank" rel="noopener">↗ NetInfluencer, 19 mars 2026</a>
+        </div>
+      </div>
+      <div class="news-item">
+        <div class="news-date">30 avr. 2026</div>
+        <div class="news-content">
+          <strong>Sports Illustrated Swimsuit adopte LTK comme infrastructure de social commerce</strong>
+          <span>Le titre médias signe avec LTK pour piloter l'ensemble de sa stratégie social commerce. Signal fort du pivot de LTK vers les partenariats médias institutionnels, en complément de son réseau de créateurs indépendants.</span>
+          <a class="news-src" href="https://www.netinfluencer.com/tag/ltk/" target="_blank" rel="noopener">↗ NetInfluencer, 30 avr. 2026</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHOPMY -->
+  <div class="news-card">
+    <div class="news-header">
+      <div class="news-badge b-noir">SM</div>
+      <div>
+        <div class="news-platform">ShopMy</div>
+        <div class="news-tagline">shopmy.us · Valorisation 1,5 Md$ · 240 000 créateurs · Croissance +200% an sur an</div>
+      </div>
+    </div>
+    <div class="news-body">
+      <div class="news-item">
+        <div class="news-date">2026</div>
+        <div class="news-content">
+          <strong>Pivot vers le social shopping — "Curated by the obsessed, not the algorithm"</strong>
+          <span>ShopMy refonde son positionnement : la plateforme ne se présente plus comme un outil d'affiliation mais comme une destination de shopping curatée par des créateurs humains, face aux algorithmes des plateformes sociales et aux IA génériques. Lancement de profils consommateurs, système de follows, likes, et une recherche IA ancrée dans les recommandations créateurs.</span>
+          <a class="news-src carotte" href="https://www.adweek.com/commerce/why-affiliate-marketing-firms-ltk-and-shopmy-want-to-be-the-next-social-media-platforms/" target="_blank" rel="noopener">↗ Adweek</a>
+        </div>
+      </div>
+      <div class="news-item">
+        <div class="news-date">2026</div>
+        <div class="news-content">
+          <strong>Migration créateurs de LTK vers ShopMy + Substack — Tendance structurelle</strong>
+          <span>Les créateurs mode et lifestyle migrent progressivement une partie de leurs revenus de LTK vers ShopMy (affiliation) et Substack (audience propriétaire). Ce mouvement reflète un désir de moins de dépendance algorithmique et de canaux d'audience directe. ShopMy profite de cette tendance : +200% de croissance an sur an.</span>
+          <a class="news-src carotte" href="https://artofthebrand.substack.com/p/the-17-billion-affiliate-economy" target="_blank" rel="noopener">↗ Art of the Brand (Substack)</a>
+        </div>
+      </div>
+      <div class="news-item">
+        <div class="news-date">Juin 2026</div>
+        <div class="news-content">
+          <strong>Données shopping Puck News — Vacances et mode facile dominent</strong>
+          <span>Les données ShopMy partagées avec Puck News montrent que les dollars d'affiliation se concentrent sur les garde-robes de vacances (jupes en lin, tops foulard, mini raphia) et les "easy pants". ShopMy commence à publier ses données de tendances de façon régulière, un axe éditorial qu'il développe en partenariat avec des médias.</span>
+          <a class="news-src carotte" href="https://puck.news/tag/shopmy/" target="_blank" rel="noopener">↗ Puck News, juin 2026</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECONDAIRES -->
+  <div class="sec-grid">
+    <div class="sec-card">
+      <div class="sec-card-head">
+        <div class="sec-badge b-indigo">SL</div>
+        <div class="sec-name">Stylink</div>
+      </div>
+      <div class="sec-item"><strong>UGC en forte croissance</strong> — Le module Stylink UGC (vidéos à partir de 189€) est identifié comme l'un des segments les plus actifs de la plateforme en 2026, portant une nouvelle cible : les marques qui veulent du contenu sans viser la performance directe. <a href="https://influee.co/fr/blog/stylink-ugc-alternatives" target="_blank" rel="noopener">↗ Influee, 2026</a></div>
+      <div class="sec-item"><strong>Expansion géographique maintenue</strong> — 30+ pays actifs, avec une montée en puissance notable sur les marchés nordiques et Benelux où les budgets influence sont en forte hausse (voir données Kolsquare).</div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-head">
+        <div class="sec-badge b-noir">MP</div>
+        <div class="sec-name">Metapic / NYORDA</div>
+      </div>
+      <div class="sec-item"><strong>Tracking full funnel lancé</strong> — Juillet 2026 : nouvelle technologie de suivi réunissant notoriété et conversion dans un seul tableau de bord. TikTok et Snapchat en cours de déploiement. <a href="https://www.inderes.fi/en/releases/nyorda-ab-metapic-launches-new-tracking-technology-and-creator-app-as-growth-accelerates-across-europe" target="_blank" rel="noopener">↗ Communiqué NYORDA, 9 juil. 2026</a></div>
+      <div class="sec-item"><strong>Application créateurs mobile en bêta</strong> — Même communiqué. Accélération de la couverture européenne : 18+ marchés actifs.</div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-head">
+        <div class="sec-badge b-carotte">AF</div>
+        <div class="sec-name">Affilae</div>
+      </div>
+      <div class="sec-item"><strong>53% des partenariats avec des créateurs</strong> — Le baromètre 2026 confirme la bascule : l'influence pèse 53% des partenariats et 51% des commissions sur la plateforme. Affilae se positionne ouvertement sur le territoire du marketing d'influence à la performance. <a href="https://jai-un-pote-dans-la.com/affilae-barometre-affiliation-influence-performance/" target="_blank" rel="noopener">↗ Baromètre Affilae 2026</a></div>
+      <div class="sec-item"><strong>Smart Tracking anti-cookies</strong> — Technologie propriétaire de suivi sans cookies tiers déployée sur l'ensemble du réseau.</div>
+    </div>
+    <div class="sec-card">
+      <div class="sec-card-head">
+        <div class="sec-badge b-indigo" style="font-size:9px">CVC</div>
+        <div class="sec-name">Collective Voice</div>
+      </div>
+      <div class="sec-item"><strong>Fermeture confirmée en 2026</strong> — Collective Voice (ex-ShopStyle Collective), troisième plateforme d'affiliation influence américaine, a cessé ses activités en 2026. Les créateurs et marques migrent vers ShopMy et LTK. <a href="https://everything-pr.com/shopmy-vs-ltk-brands" target="_blank" rel="noopener">↗ Everything PR, 11 oct. 2026</a></div>
+      <div class="sec-item"><strong>Signal de consolidation du marché</strong> — La fermeture de Collective Voice confirme que seules les plateformes avec une véritable infrastructure technologique et une base de shoppers survivent à long terme.</div>
+    </div>
+  </div>
+
+  <!-- ══ MARCHÉ ══ -->
+  <div id="marche"></div>
+  <div class="macro-sep">
+    <div class="macro-sep-line"></div>
+    <div class="macro-sep-label carotte">Veille Marché de l'Influence</div>
+    <div class="macro-sep-line"></div>
+  </div>
+
+
+
+  <!-- TENDANCES -->
+  <div class="section-title">6 tendances structurantes en 2026</div>
+  <ul class="tend-list">
+    <li class="tend-item">
+      <div class="tend-num">1</div>
+      <div class="tend-body">
+        <strong>L'influence entre dans l'ère du long terme</strong>
+        <span>Les partenariats ambassadeurs (39%, +5 pts) et les contrats longs termes (39%) dépassent les campagnes ponctuelles comme premier poste de hausse budgétaire. Un ambassadeur actif 12 mois génère en moyenne 3× plus de ventes qu'une campagne équivalente (Kolsquare). <a href="#" target="_blank">↗ Kolsquare Future of IM 2026</a></span>
+      </div>
+    </li>
+    <li class="tend-item">
+      <div class="tend-num">2</div>
+      <div class="tend-body">
+        <strong>L'IA généralise ses usages — mais pas encore le pilotage stratégique</strong>
+        <span>84% des organisations utilisent l'IA en marketing d'influence — principalement pour analyser les audiences, détecter la fraude et affiner le ciblage. Les cas d'usage créatifs (rédaction, brief, reporting) émergent en 2026 avec LTK Auto-Draft. L'IA reste un outil de processus, pas encore de stratégie. <a href="https://influencermarketinghub.com/influencer-marketing-statistics/" target="_blank" rel="noopener">↗ IMH Benchmark 2026</a></span>
+      </div>
+    </li>
+    <li class="tend-item">
+      <div class="tend-num">3</div>
+      <div class="tend-body">
+        <strong>Le paid media d'amplification devient le premier budget additionnel</strong>
+        <span>63% des marques investissent davantage en paid media pour amplifier les contenus créateurs (+6 pts vs 2025). L'influence se fusionne avec le paid social : le contenu créateur est produit une fois et distribué en organique ET en publicité payante (whitelisting). LTK Boost est l'exemple le plus avancé. <a href="#" target="_blank">↗ Kolsquare Future of IM 2026</a></span>
+      </div>
+    </li>
+    <li class="tend-item">
+      <div class="tend-num">4</div>
+      <div class="tend-body">
+        <strong>La mesure reste le principal verrou de maturité</strong>
+        <span>Seule 1 marque sur 10 décrit son approche comme pleinement intégrée au marketing mix. La mesure du ROI arrive en tête des défis (27%). La confiance dans les chiffres stagne malgré la croissance des budgets. La demande de mesure full funnel (notoriété → conversion dans un seul dashboard) s'accélère et structure les achats logiciels. <a href="#" target="_blank">↗ Kolsquare Future of IM 2026</a></span>
+      </div>
+    </li>
+    <li class="tend-item">
+      <div class="tend-num">5</div>
+      <div class="tend-body">
+        <strong>La crédibilité remplace l'authenticité comme critère N°1</strong>
+        <span>La qualité et le style des contenus (42%) dépassent le taux d'engagement (38%) et le nombre d'abonnés (32%) dans les critères de sélection des créateurs. En France, Reech résume la tendance 2026 en un mot : "crédibilité". Les nano-influenceurs reculent légèrement au profit des micro et macro engagés. <a href="https://gensdinternet.fr/2026/01/22/5-informations-sur-linfluence-marketing-a-savoir-en-2026-dapres-letude-reech/" target="_blank" rel="noopener">↗ Reech Baromètre 2026</a></span>
+      </div>
+    </li>
+    <li class="tend-item">
+      <div class="tend-num">6</div>
+      <div class="tend-body">
+        <strong>Social commerce : 85 Md$ globaux, WhatsApp et LinkedIn émergent</strong>
+        <span>Le social commerce mondial atteint 85 Md$ en 2026 (Adweek). Instagram reste incontournable à 91% mais TikTok recule de 12,5 points en Europe à 67%. Les signaux de croissance : WhatsApp triple à 15% (marques qui testent la messagerie commerce), LinkedIn monte à 40% (+6 pts), Threads et Bluesky progressent nettement. <a href="#" target="_blank">↗ Kolsquare Future of IM 2026</a></span>
+      </div>
+    </li>
+  </ul>
+
+
+
+  <!-- IMH FOCUS -->
+  <div id="france"></div>
+  <div class="section-title">Signaux opérationnels — IMH Benchmark Report 2026</div>
+  <div class="fr-card">
+    <h3>📊 Influencer Marketing Hub — 600+ répondants marketing — publié le 4 mai 2026 — <a href="https://influencermarketinghub.com/influencer-marketing-benchmark-report/" target="_blank" rel="noopener" style="color:var(--indigo);font-size:11px;">↗ Source officielle</a></h3>
+    <div class="fr-grid">
+      <div class="fr-block">
+        <strong>TikTok reste le pari N°1 — même quand les budgets baissent</strong>
+        <span>31% des plans incluent TikTok, le score le plus élevé de tous les réseaux. Signal clé : TikTok est aussi la plateforme la plus retenue par les marques qui réduisent leurs budgets (39%). C'est l'actif qu'on coupe en dernier.</span>
+      </div>
+      <div class="fr-block">
+        <strong>Le ROI est attendu en moins d'un mois dans 65,9% des cas</strong>
+        <span>Dont 48,4% en moins de 2 semaines. L'influence est traitée comme un canal de performance directe, pas comme un investissement de notoriété long terme. Ce décalage avec la réalité crée des désillusions internes quand les mesures ne suivent pas.</span>
+      </div>
+      <div class="fr-block">
+        <strong>Nano et micro créateurs : expansion forte, macro au point mort</strong>
+        <span>51,4% des marques élargissent leur usage des nano, 52,8% pour les micro, 50% pour les UGC creators. Les macro sont à l'équilibre parfait (20,6% hausse / 20,6% baisse). Le marché descend vers les petits profils pour des raisons de coût et de volume.</span>
+      </div>
+      <div class="fr-block">
+        <strong>Social commerce : 53,3% n'y sont pas encore — TikTok Shop domine chez ceux qui y sont</strong>
+        <span>Parmi les adoptants, TikTok Shop représente 66,2% des sélections, contre 13,2% pour Instagram Checkout. Le social commerce n'est pas universel, mais il est quasi exclusivement TikTok quand il existe. Fortement corrélé aux marques qui augmentent leurs budgets.</span>
+      </div>
+      <div class="fr-block">
+        <strong>La fraude reste une réalité quotidienne : 89% ont rencontré un problème</strong>
+        <span>Les faux followers représentent 56,5% de tous les problèmes de fraude signalés. Seuls 10,9% n'ont aucun problème de qualité à rapporter. Le contrôle d'authenticité avant contractualisation n'est plus optionnel — c'est une étape de production.</span>
+      </div>
+      <div class="fr-block">
+        <strong>La mesure ne suit pas les budgets — un risque structurel documenté</strong>
+        <span>Les marques qui augmentent leurs budgets de 50%+ représentent seulement 64,2% des sélections d'outils de mesure, alors qu'elles devraient dominer. Les marques à budget stable sur-indexent sur les outils de mesure. Plus de budget ne veut pas dire meilleure mesure.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ IMPLICATIONS SMI ══ -->
+  <div id="implications"></div>
+  <div class="macro-sep">
+    <div class="macro-sep-line"></div>
+    <div class="macro-sep-label">Implications pour SMI</div>
+    <div class="macro-sep-line"></div>
+  </div>
+
+  <div class="impl-grid">
+    <div class="impl-card impl-opp">
+      <div class="impl-title">Opportunités à saisir</div>
+      <ul class="impl-list">
+        <li class="impl-item"><strong>Le marché valide le modèle ambassadeur</strong> — La tendance long terme (39%) confirme l'axe stratégique de SMI. Argument commercial direct : SMI vend un actif récurrent, pas une dépense campagne.</li>
+        <li class="impl-item"><strong>Le recours aux plateformes bondit</strong> — +26 pts en un an (39% → 65%). Le marché cherche des outils. SMI doit capter cette demande avec une offre SaaS visible et accessible.</li>
+        <li class="impl-item"><strong>La crédibilité remplace les chiffres</strong> — Critère de sélection numéro un en 2026 (France + Europe). La curation stricte de SMI (5 000 créateurs présélectionnés) est un argument commercial à actionner immédiatement.</li>
+        <li class="impl-item"><strong>La fermeture de Collective Voice libère des créateurs et marques</strong> — Opportunité de recrutement directe sur un marché américain qui se consolide.</li>
+        <li class="impl-item"><strong>Le frein organisationnel est l'ouverture pour SMI</strong> — Reech confirme que 40% des gros projets sont externalisés. SMI est exactement ce partenaire : SaaS + équipe humaine dédiée.</li>
+      </ul>
+    </div>
+    <div class="impl-card impl-vig">
+      <div class="impl-title">Points de vigilance</div>
+      <ul class="impl-list">
+        <li class="impl-item"><strong>LTK accélère en IA 3× plus vite</strong> — 4 lancements produit en 8 mois. L'écart technologique avec SMI se creuse. La réponse de SMI doit être narrative (valeur humaine) ET produit (roadmap visible).</li>
+        <li class="impl-item"><strong>La mesure full funnel devient un standard marché</strong> — 65% des marques utilisent une plateforme, et la demande de reporting notoriété + conversion s'accélère. SMI n'a ce reporting qu'en Campagne Paid. Risque sur les renouvellements de grandes marques avec objectifs brand.</li>
+        <li class="impl-item"><strong>Le paid media d'amplification capte 63% des hausses budgétaires</strong> — SMI propose du paid en managed service mais pas de produit d'amplification automatisé. Ces budgets vont vers LTK Boost ou Meta directement.</li>
+        <li class="impl-item"><strong>Affilae monte sur le territoire de l'influence à la performance</strong> — 53% de leurs partenariats sont avec des créateurs. Le positionnement de SMI doit se renforcer sur ce qui différencie : profondeur d'outillage créateurs et accompagnement humain.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SOURCES -->
+  <div class="spacer"></div>
+  <div class="sources-block">
+    <strong>Sources de cette édition —</strong>
+    <a href="#" target="_blank">Kolsquare "L'avenir du marketing d'influence 2026-2027"</a> (1 123 répondants, mai-juin 2026) ·
+    <a href="https://influencermarketinghub.com/influencer-marketing-statistics/" target="_blank" rel="noopener">Influencer Marketing Hub Benchmark Report 2026</a> ·
+    <a href="https://influencermarketinghub.com/influencer-marketing-benchmark-report/" target="_blank" rel="noopener">IMH Benchmark Report 2026</a> (600+ répondants, mai 2026) ·
+    <a href="https://company.shopltk.com/en/press" target="_blank" rel="noopener">LTK Newsroom</a> ·
+    <a href="https://secure.businesswire.com/news/home/20260826188603/en/" target="_blank" rel="noopener">Business Wire — LTK Agentic (août 2026)</a> ·
+    <a href="https://www.adweek.com/commerce/why-affiliate-marketing-firms-ltk-and-shopmy-want-to-be-the-next-social-media-platforms/" target="_blank" rel="noopener">Adweek — LTK vs ShopMy</a> ·
+    <a href="https://www.inderes.fi/en/releases/nyorda-ab-metapic-launches-new-tracking-technology-and-creator-app-as-growth-accelerates-across-europe" target="_blank" rel="noopener">Communiqué NYORDA Metapic (juil. 2026)</a> ·
+    <a href="https://jai-un-pote-dans-la.com/affilae-barometre-affiliation-influence-performance/" target="_blank" rel="noopener">Baromètre Affilae 2026</a>
+  </div>
+
+</div>
+
+<div class="footer">
+  <strong>Shop My Influence</strong> · Radar Sectoriel #01 · Novembre 2026<br>
+  Document interne · CODIR & Équipe commerciale · Ne pas diffuser à l'extérieur<br>
+  Données issues de sources publiques et du rapport Kolsquare fourni — mise à jour mensuelle.
+</div>
+
+</body>
+</html>
